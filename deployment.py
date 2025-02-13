@@ -6,6 +6,7 @@ import subprocess
 import paramiko
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
+from executor import Executor
 
 load_dotenv()
 
@@ -22,17 +23,5 @@ logging.info(f"Args {script_args}")
 
 # subprocess.run("pwd && touch shell.txt", shell=True)
 
-env = Environment(loader=FileSystemLoader("scripts"))
-template = env.get_template(f"{args.script_name}.sh")
-config_content = template.render(script_args)
-
-client = paramiko.SSHClient()
-client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-client.connect(
-    hostname=os.getenv('HOST'),
-    username=os.getenv('REMOTE_USER'),
-    port=os.getenv('PORT')
-)
-
-client.exec_command(config_content)
+executor = Executor(args.script_name, script_args)
+executor.run()
