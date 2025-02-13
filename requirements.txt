@@ -1,0 +1,5 @@
+Jinja2
+python-dotenv
+paramiko
+celery
+redis
